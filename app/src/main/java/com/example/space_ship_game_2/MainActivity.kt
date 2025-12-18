@@ -84,74 +84,61 @@ class MainActivity : AppCompatActivity() {
 
     private fun startFalling() {
         random = Random()
-        currentCol = random.nextInt(3)
-        currentRow = 0
-
         gameTimer = Timer()
         gameTimer.schedule(object : TimerTask() {
             override fun run() {
                 runOnUiThread(object : Runnable {
                     @RequiresPermission(Manifest.permission.VIBRATE)
                     override fun run() {
-                        updateAlienPosition()
-                    }
+                        if (!isGameRunning) return
 
-                    @RequiresPermission(Manifest.permission.VIBRATE)
-                    private fun updateAlienPosition() {
-                        var prevRow : Int = 0
-                             if (currentRow > 0) {
-                                prevRow = currentRow - 1
-                        }
-
-                        if (prevRow != 4 || currentCol != shipCol) {
-                            gameMatrix[prevRow]?.get(currentCol)?.visibility = View.INVISIBLE
-                        }
-
-                        if (currentRow == 4 && currentCol == shipCol){ // hit
-                            lives--
-                            vibrate()
-                            updateLivesUI()
-                            gameTimer.cancel()
-                            isGameRunning = false
-                            gameMatrix[currentRow]?.get(currentCol)?.setImageResource(R.drawable.pickle_rick_sticker)
-                            gameMatrix[currentRow]?.get(currentCol)?.visibility = View.VISIBLE
-                            if (isGameEnded()){
-                                showGameOverDialog()
-                                SoundManager.pauseBackgroundMusic()
-                                SoundManager.playSound(R.raw.wubalubadubdub)
-                            }else{
-                                startFalling()
+                        for (col in 0 until COLS) {
+                            if (col != shipCol && gameMatrix[4]?.get(col)?.visibility == View.VISIBLE) {
+                                gameMatrix[4]?.get(col)?.visibility = View.INVISIBLE
+                                score++
+                                updateScoreUI()
                             }
-                            return
                         }
 
-                        if (currentRow >= 5) { //not hit
-                            score++
-                            updateScoreUI()
-                            gameTimer.cancel()
-                            startFalling()
-                            return
+                        for (row in 3 downTo 0) {
+                            for (col in 0 until COLS) {
+                                if (gameMatrix[row]?.get(col)?.visibility == View.VISIBLE) {
+                                    gameMatrix[row]?.get(col)?.visibility = View.INVISIBLE
+                                    val nextRow = row + 1
+
+                                    if (nextRow == 4) {
+                                        if (col == shipCol) {
+                                            lives--
+                                            vibrate()
+                                            updateLivesUI()
+                                            if (lives == 0) {
+                                                isGameRunning = false
+                                                gameTimer.cancel()
+                                                showGameOverDialog()
+                                                SoundManager.pauseBackgroundMusic()
+                                                SoundManager.playSound(R.raw.wubalubadubdub)
+                                                return
+                                            }
+                                        } else {
+                                            gameMatrix[4]?.get(col)?.setImageResource(R.drawable.gromflomite_soldier)
+                                            gameMatrix[4]?.get(col)?.visibility = View.VISIBLE
+                                        }
+                                    } else {
+                                        gameMatrix[nextRow]?.get(col)?.setImageResource(R.drawable.gromflomite_soldier)
+                                        gameMatrix[nextRow]?.get(col)?.visibility = View.VISIBLE
+                                    }
+                                }
+                            }
                         }
 
-                        //gameMatrix[currentRow]?.get(currentCol)?.setVisibility(View.VISIBLE)
-                        val currentCell = gameMatrix[currentRow]?.get(currentCol)
-
-                        if (currentRow == 4 && currentCol == shipCol){
-                            currentCell?.setImageResource(R.drawable.pickle_rick_sticker)
-                        }else{
-                            currentCell?.setImageResource(R.drawable.gromflomite_soldier)
-                        }
-
-
-                        currentCell?.setVisibility(View.VISIBLE)
-                        currentRow++
-
+                        val newCol = random.nextInt(COLS)
+                        gameMatrix[0]?.get(newCol)?.setImageResource(R.drawable.gromflomite_soldier)
+                        gameMatrix[0]?.get(newCol)?.visibility = View.VISIBLE
                     }
                 })
             }
         }, 0, 700)
     }
-
     private  fun movementButtons(){
         binding.btnArrowLeft.setOnClickListener {moveShip(-1)}
         binding.btnArrowRight.setOnClickListener {moveShip(1)}
@@ -251,12 +238,7 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresPermission(Manifest.permission.VIBRATE)
     private fun vibrate() {
-        if (Build.VERSION.SDK_INT >= 26) {
-            (this.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            (this.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(150)
-        }
-    }
+        (this.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE))}
 }
 
 
