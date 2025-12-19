@@ -137,13 +137,14 @@ class MainActivity : AppCompatActivity() {
                                         if (col == shipCol) {
                                             lives--
                                             vibrate()
+                                            SoundManager.playSound(R.raw.sound_eating_roar)
                                             updateLivesUI()
                                             if (lives == 0) {
                                                 isGameRunning = false
                                                 gameTimer.cancel()
                                                 showGameOverDialog()
                                                 SoundManager.pauseBackgroundMusic()
-                                                SoundManager.playSound(R.raw.wubalubadubdub)
+                                                SoundManager.playSound(R.raw.sound_rick_sanchez_player)
                                                 return
                                             }
                                         } else {
