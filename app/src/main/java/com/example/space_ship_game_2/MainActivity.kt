@@ -23,8 +23,10 @@ import java.util.TimerTask
 
 class MainActivity : AppCompatActivity() {
     val ROWS = 5
-    val COLS = 3
-    var shipCol = 1
+    val COLS = 5
+    var shipCol = 2
+
+    val LASTROWINDEX = 4
     lateinit var gameMatrix: Array<Array<ImageView?>?>
     private lateinit var binding: ActivityMainBinding
     var lives = 3
@@ -55,29 +57,43 @@ class MainActivity : AppCompatActivity() {
         val alienImageView = binding.bkGame
         Glide.with(this).load(R.drawable.bk_loop_space).into(alienImageView)
     }
-    private fun showPlayerAvatar(alienImageView: ImageView = binding.soliderShip41){
+    private fun showPlayerAvatar(alienImageView: ImageView = binding.pickleRick42){
         Glide.with(this)
             .load(R.drawable.pickle_rick_sticker)
             .into(alienImageView)
     }
 
     private fun matrixInit(){
-        gameMatrix = Array<Array<ImageView?>?>(ROWS) { arrayOfNulls<ImageView>(COLS) }
-        gameMatrix[0]?.set(0, binding.solider00);
-        gameMatrix[0]?.set(1, binding.solider01);
-        gameMatrix[0]?.set(2, binding.solider02);
-        gameMatrix[1]?.set(0, binding.solider10);
-        gameMatrix[1]?.set(1, binding.solider11);
-        gameMatrix[1]?.set(2, binding.solider12);
-        gameMatrix[2]?.set(0, binding.solider20);
-        gameMatrix[2]?.set(1, binding.solider21Center);
-        gameMatrix[2]?.set(2, binding.solider22);
-        gameMatrix[3]?.set(0, binding.solider30);
-        gameMatrix[3]?.set(1, binding.solider31);
-        gameMatrix[3]?.set(2, binding.solider32);
-        gameMatrix[4]?.set(0, binding.soliderShip40);
-        gameMatrix[4]?.set(1, binding.soliderShip41);
-        gameMatrix[4]?.set(2, binding.soliderShip42);
+        gameMatrix = Array(ROWS) { arrayOfNulls(COLS) }
+        gameMatrix[LASTROWINDEX-4]?.set(0, binding.solider00)
+        gameMatrix[LASTROWINDEX-4]?.set(1, binding.solider01)
+        gameMatrix[LASTROWINDEX-4]?.set(2, binding.solider02)
+        gameMatrix[LASTROWINDEX-4]?.set(3, binding.solider03)
+        gameMatrix[LASTROWINDEX-4]?.set(4, binding.solider04)
+
+        gameMatrix[LASTROWINDEX-3]?.set(0, binding.solider10)
+        gameMatrix[LASTROWINDEX-3]?.set(1, binding.solider11)
+        gameMatrix[LASTROWINDEX-3]?.set(2, binding.solider12)
+        gameMatrix[LASTROWINDEX-3]?.set(3, binding.solider13)
+        gameMatrix[LASTROWINDEX-3]?.set(4, binding.solider14)
+
+        gameMatrix[LASTROWINDEX-2]?.set(0, binding.solider20)
+        gameMatrix[LASTROWINDEX-2]?.set(1, binding.solider21)
+        gameMatrix[LASTROWINDEX-2]?.set(2, binding.solider22)
+        gameMatrix[LASTROWINDEX-2]?.set(3, binding.solider24)
+        gameMatrix[LASTROWINDEX-2]?.set(4, binding.solider25)
+
+        gameMatrix[LASTROWINDEX-1]?.set(0, binding.solider30)
+        gameMatrix[LASTROWINDEX-1]?.set(1, binding.solider31)
+        gameMatrix[LASTROWINDEX-1]?.set(2, binding.solider32)
+        gameMatrix[LASTROWINDEX-1]?.set(3, binding.solider33)
+        gameMatrix[LASTROWINDEX-1]?.set(4, binding.solider34)
+
+        gameMatrix[LASTROWINDEX]?.set(0, binding.pickleRick40)
+        gameMatrix[LASTROWINDEX]?.set(1, binding.pickleRick41)
+        gameMatrix[LASTROWINDEX]?.set(2, binding.pickleRick42)
+        gameMatrix[LASTROWINDEX]?.set(3, binding.pickleRick43)
+        gameMatrix[LASTROWINDEX]?.set(4, binding.pickleRick44)
 
         restartMatrix()
     }
@@ -92,21 +108,26 @@ class MainActivity : AppCompatActivity() {
                     override fun run() {
                         if (!isGameRunning) return
 
+                        // שלב 1: ניקוי חייזרים שהגיעו למטה (ופספסו את השחקן)
+                        // התיקון: בודקים רק אם זה *לא* השחקן. השחקן תמיד שם וזה תקין.
                         for (col in 0 until COLS) {
-                            if (col != shipCol && gameMatrix[4]?.get(col)?.visibility == View.VISIBLE) {
-                                gameMatrix[4]?.get(col)?.visibility = View.INVISIBLE
+                            if (col != shipCol && gameMatrix[LASTROWINDEX]?.get(col)?.visibility == View.VISIBLE) {
+                                gameMatrix[LASTROWINDEX]?.get(col)?.visibility = View.INVISIBLE
                                 score++
                                 updateScoreUI()
                             }
                         }
 
-                        for (row in 3 downTo 0) {
+                        // שלב 2: הזזת החייזרים למטה
+                        // מתחילים משורה אחת לפני האחרונה
+                        for (row in LASTROWINDEX - 1 downTo 0) {
                             for (col in 0 until COLS) {
                                 if (gameMatrix[row]?.get(col)?.visibility == View.VISIBLE) {
                                     gameMatrix[row]?.get(col)?.visibility = View.INVISIBLE
                                     val nextRow = row + 1
 
-                                    if (nextRow == 4) {
+                                    if (nextRow == LASTROWINDEX) {
+                                        // בדיקת התנגשות בזמן אמת (כשהחייזר בא לרדת על הראש של השחקן)
                                         if (col == shipCol) {
                                             lives--
                                             vibrate()
@@ -120,10 +141,12 @@ class MainActivity : AppCompatActivity() {
                                                 return
                                             }
                                         } else {
-                                            gameMatrix[4]?.get(col)?.setImageResource(R.drawable.gromflomite_soldier)
-                                            gameMatrix[4]?.get(col)?.visibility = View.VISIBLE
+                                            // החייזר נוחת ליד השחקן
+                                            gameMatrix[LASTROWINDEX]?.get(col)?.setImageResource(R.drawable.gromflomite_soldier)
+                                            gameMatrix[LASTROWINDEX]?.get(col)?.visibility = View.VISIBLE
                                         }
                                     } else {
+                                        // ירידה רגילה בין שורות
                                         gameMatrix[nextRow]?.get(col)?.setImageResource(R.drawable.gromflomite_soldier)
                                         gameMatrix[nextRow]?.get(col)?.visibility = View.VISIBLE
                                     }
@@ -131,6 +154,7 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
 
+                        // שלב 3: יצירת חייזר חדש למעלה
                         val newCol = random.nextInt(COLS)
                         gameMatrix[0]?.get(newCol)?.setImageResource(R.drawable.gromflomite_soldier)
                         gameMatrix[0]?.get(newCol)?.visibility = View.VISIBLE
@@ -139,38 +163,36 @@ class MainActivity : AppCompatActivity() {
             }
         }, 0, 700)
     }
+
     private  fun movementButtons(){
         binding.btnArrowLeft.setOnClickListener {moveShip(-1)}
         binding.btnArrowRight.setOnClickListener {moveShip(1)}
     }
-
     private fun moveShip(direction: Int) {
         val newCol = shipCol + direction
 
-        if (newCol < 0 || newCol > 2) {
+        if (newCol < 0 || newCol > LASTROWINDEX) {
             return
         }
 
-        gameMatrix[4]?.get(shipCol)?.visibility = View.INVISIBLE
+        gameMatrix[LASTROWINDEX]?.get(shipCol)?.visibility = View.INVISIBLE
         shipCol = newCol
         updateSoliderPic(shipCol)
-        gameMatrix[4]?.get(shipCol)?.visibility = View.VISIBLE
+        gameMatrix[LASTROWINDEX]?.get(shipCol)?.visibility = View.VISIBLE
 
     }
 
     private fun updateSoliderPic(shipCol : Int) {
-        if (shipCol == 0){
-            showPlayerAvatar(binding.soliderShip40)
-//           .setImageResource(R.drawable.pickle_rick_sticker)
-        }
-        if (shipCol == 1){
-            showPlayerAvatar(binding.soliderShip41)
-//           .setImageResource(R.drawable.pickle_rick_sticker)
-        }
-        if (shipCol == 2){
-            showPlayerAvatar(binding.soliderShip42)
-//           .setImageResource(R.drawable.pickle_rick_sticker)
-        }
+        if (shipCol == 0){showPlayerAvatar(binding.pickleRick40)}
+
+        if (shipCol == 1){showPlayerAvatar(binding.pickleRick41)}
+
+        if (shipCol == 2){showPlayerAvatar(binding.pickleRick42)}
+
+        if (shipCol == 3){showPlayerAvatar(binding.pickleRick43)}
+
+        if (shipCol == 4){showPlayerAvatar(binding.pickleRick44)}
+
     }
 
     private fun updateLivesUI() {
@@ -224,7 +246,7 @@ class MainActivity : AppCompatActivity() {
     private fun restartMatrix(){
         for (row in gameMatrix) {
             row?.forEach { imageView ->
-                if (imageView != gameMatrix[4]?.get(shipCol)) {
+                if (imageView != gameMatrix[LASTROWINDEX]?.get(shipCol)) {
                     imageView?.visibility = View.INVISIBLE
                 }
             }
@@ -238,7 +260,14 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresPermission(Manifest.permission.VIBRATE)
     private fun vibrate() {
-        (this.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE))}
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            vibrator.vibrate(150)
+        }
+
+    }
 }
 
 
