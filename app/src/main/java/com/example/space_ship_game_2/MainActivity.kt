@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity() {
     var shipCol = 2
 
     val LASTROWINDEX = 4
+
+    var SCOREACCLERATION = 10
+    var delay: Long = 700
     lateinit var gameMatrix: Array<Array<ImageView?>?>
     private lateinit var binding: ActivityMainBinding
     var lives = 3
@@ -108,18 +111,22 @@ class MainActivity : AppCompatActivity() {
                     override fun run() {
                         if (!isGameRunning) return
 
-                        // שלב 1: ניקוי חייזרים שהגיעו למטה (ופספסו את השחקן)
-                        // התיקון: בודקים רק אם זה *לא* השחקן. השחקן תמיד שם וזה תקין.
                         for (col in 0 until COLS) {
                             if (col != shipCol && gameMatrix[LASTROWINDEX]?.get(col)?.visibility == View.VISIBLE) {
                                 gameMatrix[LASTROWINDEX]?.get(col)?.visibility = View.INVISIBLE
                                 score++
                                 updateScoreUI()
+
+                                if (score % SCOREACCLERATION == 0) {
+                                    delay -= 50
+                                    if (delay < 200) delay = 200
+                                    gameTimer.cancel()
+                                    startFalling()
+                                    return
+                                }
                             }
                         }
 
-                        // שלב 2: הזזת החייזרים למטה
-                        // מתחילים משורה אחת לפני האחרונה
                         for (row in LASTROWINDEX - 1 downTo 0) {
                             for (col in 0 until COLS) {
                                 if (gameMatrix[row]?.get(col)?.visibility == View.VISIBLE) {
@@ -127,7 +134,6 @@ class MainActivity : AppCompatActivity() {
                                     val nextRow = row + 1
 
                                     if (nextRow == LASTROWINDEX) {
-                                        // בדיקת התנגשות בזמן אמת (כשהחייזר בא לרדת על הראש של השחקן)
                                         if (col == shipCol) {
                                             lives--
                                             vibrate()
@@ -141,12 +147,10 @@ class MainActivity : AppCompatActivity() {
                                                 return
                                             }
                                         } else {
-                                            // החייזר נוחת ליד השחקן
                                             gameMatrix[LASTROWINDEX]?.get(col)?.setImageResource(R.drawable.gromflomite_soldier)
                                             gameMatrix[LASTROWINDEX]?.get(col)?.visibility = View.VISIBLE
                                         }
                                     } else {
-                                        // ירידה רגילה בין שורות
                                         gameMatrix[nextRow]?.get(col)?.setImageResource(R.drawable.gromflomite_soldier)
                                         gameMatrix[nextRow]?.get(col)?.visibility = View.VISIBLE
                                     }
@@ -154,20 +158,20 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
 
-                        // שלב 3: יצירת חייזר חדש למעלה
                         val newCol = random.nextInt(COLS)
                         gameMatrix[0]?.get(newCol)?.setImageResource(R.drawable.gromflomite_soldier)
                         gameMatrix[0]?.get(newCol)?.visibility = View.VISIBLE
                     }
                 })
             }
-        }, 0, 700)
+        }, 0, delay)
     }
 
     private  fun movementButtons(){
         binding.btnArrowLeft.setOnClickListener {moveShip(-1)}
         binding.btnArrowRight.setOnClickListener {moveShip(1)}
     }
+
     private fun moveShip(direction: Int) {
         val newCol = shipCol + direction
 
