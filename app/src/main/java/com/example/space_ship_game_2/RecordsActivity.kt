@@ -38,8 +38,6 @@ class RecordsActivity : AppCompatActivity() {
             .load(R.drawable.bk_loop_space)
             .into(alienImageView)
     }
-
-
     private fun backToMenu(){
         binding.btnBackToMenu.setOnClickListener {
             val intent = Intent(this, MenuActivity::class.java)
