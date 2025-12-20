@@ -2,8 +2,12 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    >
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/bkRecords"
@@ -12,74 +16,49 @@
         android:src="@drawable/bk_loop_space"
         android:scaleType="centerCrop"/>
 
-    <TextView
-        android:id="@+id/records_LBL_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:text="TOP SCORES"
-        android:textColor="#00B0C8"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        android:shadowColor="#000000"
-        android:shadowDx="5"
-        android:shadowDy="5"
-        android:shadowRadius="5" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnBackToMenu"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginHorizontal="50dp"
-        android:layout_marginBottom="40dp"
-        android:backgroundTint="#4CAF50"
-        android:text="Back to Menu"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:cornerRadius="20dp" />
-
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/records_LBL_title"
-        android:layout_above="@id/btnBackToMenu"
-        android:layout_margin="30dp"
-        android:background="#99000000"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/records_LBL_score1"
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:text="1. 1500 pts"
-            android:textColor="#FFFFFF"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:text="Top Scores"
+            android:gravity="center"
+            android:textColor="#26DEC3"
+            android:textSize="30sp"
+            />
 
-        <TextView
-            android:id="@+id/records_LBL_score2"
+        <FrameLayout
+            android:id="@+id/layLst"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#00CDDC39" />
+
+        <FrameLayout
+            android:id="@+id/layMap"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:background="#00CDDC39"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackToMenu"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:text="2. 1200 pts"
-            android:textColor="#CCCCCC"
-            android:textSize="20sp" />
+            android:text="Return to menu"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            app:strokeColor="#2EDCF4"
+            />
 
-        <TextView
-            android:id="@+id/records_LBL_score3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="3. 890 pts"
-            android:textColor="#CCCCCC"
-            android:textSize="20sp" />
-
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </RelativeLayout>

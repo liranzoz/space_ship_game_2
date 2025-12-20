@@ -108,10 +108,13 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.AppCompatImageButton
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/ic_btnMuteUnmute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_mute"
-        android:backgroundTint="@color/white"
+        android:src="@drawable/ic_unmute"
+        android:backgroundTint="#00FFFFFF"
         />
 
 </RelativeLayout>

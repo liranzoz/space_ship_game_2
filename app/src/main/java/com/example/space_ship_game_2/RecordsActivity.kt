@@ -19,11 +19,20 @@ class RecordsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_records)
         binding = ActivityRecordsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initViews()
         backToMenu()
         showBackground()
     }
 
-    fun showBackground(){
+    private fun initViews(){
+        val mapsFragment = MapsFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.layMap, mapsFragment).commit()
+
+        val recordListFragment = RecordListFragment()
+        supportFragmentManager.beginTransaction().replace(R.id.layLst, recordListFragment).commit()
+
+    }
+    private fun showBackground(){
         val alienImageView = binding.bkRecords
         Glide.with(this)
             .load(R.drawable.bk_loop_space)
@@ -31,10 +40,11 @@ class RecordsActivity : AppCompatActivity() {
     }
 
 
-    fun backToMenu(){
+    private fun backToMenu(){
         binding.btnBackToMenu.setOnClickListener {
             val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 }
