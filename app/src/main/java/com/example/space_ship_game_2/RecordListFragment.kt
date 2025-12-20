@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
+import com.example.space_ship_game_2.com.example.space_ship_game_2.GameManager
+import com.example.space_ship_game_2.com.example.space_ship_game_2.OnScoreItemClickListener
+import com.example.space_ship_game_2.com.example.space_ship_game_2.ScoreItem
 import com.example.space_ship_game_2.databinding.FragmentRecordListBinding
 
 class RecordListFragment : Fragment() {

@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
@@ -17,7 +16,7 @@ import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
-import com.example.space_ship_game_2.SoundManager
+import com.example.space_ship_game_2.com.example.space_ship_game_2.GameManager
 import com.example.space_ship_game_2.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices

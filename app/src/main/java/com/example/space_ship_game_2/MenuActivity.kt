@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.space_ship_game_2.com.example.space_ship_game_2.GameManager
 import com.example.space_ship_game_2.databinding.MainMenuBinding
 
 

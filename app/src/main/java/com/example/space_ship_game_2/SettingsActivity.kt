@@ -7,10 +7,8 @@ import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
-import com.example.space_ship_game_2.databinding.ActivityRecordsBinding
+import com.example.space_ship_game_2.com.example.space_ship_game_2.GameManager
 import com.example.space_ship_game_2.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {

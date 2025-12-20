@@ -1,4 +1,4 @@
-package com.example.space_ship_game_2
+package com.example.space_ship_game_2.com.example.space_ship_game_2
 
 import android.content.Context
 import android.content.SharedPreferences
