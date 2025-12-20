@@ -13,6 +13,7 @@ import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
@@ -44,6 +45,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var random: Random
     var isGameRunning : Boolean = true
 
+    var isGamePaused : Boolean = false
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -71,6 +74,9 @@ class MainActivity : AppCompatActivity() {
         startFalling()//main func
         movementButtons()
 
+        binding.btnPause.setOnClickListener {
+            onPauseClicked()
+        }
     }
 
     private fun requestLocationPermission() {
@@ -134,6 +140,7 @@ class MainActivity : AppCompatActivity() {
                     @RequiresPermission(Manifest.permission.VIBRATE)
                     override fun run() {
                         if (!isGameRunning) return
+                        if (isGamePaused) return
 
                         for (col in 0 until COLS) {
                             if (col != shipCol && gameMatrix[LASTROWINDEX]?.get(col)?.visibility == View.VISIBLE) {
@@ -314,6 +321,32 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    private fun onPauseClicked() {
+        isGamePaused = true
+        SoundManager.toggleSound(false)
+        showPauseDialog()
+    }
+
+    private fun showPauseDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("PAUSED")
+        builder.setMessage("Game is paused")
+        builder.setCancelable(false)
+        builder.setPositiveButton("Resume") { dialog, _ ->
+            isGamePaused = false
+            SoundManager.toggleSound(true)
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Quit") { _, _ ->
+            finish()
+        }
+        builder.create().show()
+    }
+
+
 }
+
+
 
 
