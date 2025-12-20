@@ -3,6 +3,7 @@ package com.example.space_ship_game_2
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -11,11 +12,15 @@ import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
 import com.example.space_ship_game_2.SoundManager
 import com.example.space_ship_game_2.databinding.ActivityMainBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import java.util.Random
 import java.util.Timer
 import java.util.TimerTask
@@ -40,20 +45,40 @@ class MainActivity : AppCompatActivity() {
     lateinit var random: Random
     var isGameRunning : Boolean = true
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        // will be info popup
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        requestLocationPermission()
+
         SoundManager.stopBackgroundMusic()
         SoundManager.startBackgroundMusic(R.raw.get_shwifty)
+
         showBackground()
         matrixInit()
         showPlayerAvatar()
-        startFalling()
+        startFalling()//main func
         movementButtons()
 
+    }
+
+    private fun requestLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+        }
     }
 
     private fun showBackground(){
@@ -133,15 +158,16 @@ class MainActivity : AppCompatActivity() {
                                     gameMatrix[row]?.get(col)?.visibility = View.INVISIBLE
                                     val nextRow = row + 1
 
-                                    if (nextRow == LASTROWINDEX) {
+                                    if (nextRow == LASTROWINDEX) { //hit
                                         if (col == shipCol) {
                                             lives--
                                             vibrate()
                                             SoundManager.playSound(R.raw.sound_eating_roar)
                                             updateLivesUI()
-                                            if (lives == 0) {
+                                            if (lives == 0) { //gameover
                                                 isGameRunning = false
                                                 gameTimer.cancel()
+                                                saveScore()
                                                 showGameOverDialog()
                                                 SoundManager.pauseBackgroundMusic()
                                                 SoundManager.playSound(R.raw.sound_rick_sanchez_player)
@@ -166,7 +192,7 @@ class MainActivity : AppCompatActivity() {
                 })
             }
         }, 0, delay)
-    }
+    }//main func
 
     private  fun movementButtons(){
         binding.btnArrowLeft.setOnClickListener {moveShip(-1)}
@@ -263,6 +289,22 @@ class MainActivity : AppCompatActivity() {
         binding.scoreCounter.text = score.toString()
     }
 
+    private fun saveScore(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    GameManager.addScore(this, score, location.latitude, location.longitude)
+                } else {
+                    GameManager.addScore(this, score, 0.0, 0.0)
+                }
+
+            }
+        } else {
+            GameManager.addScore(this, score, 0.0, 0.0)
+        }
+    }
     @RequiresPermission(Manifest.permission.VIBRATE)
     private fun vibrate() {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
