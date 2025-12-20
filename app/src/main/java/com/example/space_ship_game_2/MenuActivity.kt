@@ -19,6 +19,7 @@ class MenuActivity : AppCompatActivity() {
         setContentView(R.layout.main_menu)
         binding = MainMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        GameManager.init(this)
         SoundManager.init(this)
         SoundManager.startBackgroundMusic(R.raw.snd_rick_and_morty_theme_song)
         showBackground()
@@ -28,13 +29,21 @@ class MenuActivity : AppCompatActivity() {
         showSettings()
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateUI()
+    }
+
+    private fun updateUI() {
+        binding.txtNicknameView.text = GameManager.nickname
+    }
+
     private fun showSettings() {
         binding.btnSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
     }
-
 
     private fun showBackground(){
         val alienImageView = binding.bkMainMenu

@@ -46,7 +46,8 @@
          <androidx.appcompat.widget.LinearLayoutCompat
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:layout_weight="1">
+             android:layout_weight="1"
+             android:orientation="vertical">
              <androidx.appcompat.widget.AppCompatImageView
                  android:id="@+id/imgRickAndMortyLogo"
                  android:layout_width="wrap_content"
@@ -54,6 +55,24 @@
                  android:src="@drawable/img_rick_and_morty_logo"
                  android:adjustViewBounds="true"
                  />
+             <androidx.appcompat.widget.LinearLayoutCompat
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:orientation="horizontal"
+                 android:gravity="center|top"
+                 >
+
+             <androidx.appcompat.widget.AppCompatTextView
+                 android:id="@+id/txtNicknameView"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="LiranZouzulya"
+                 android:textColor="#8A8989"
+                 android:layout_marginTop="15dp"
+                 android:textSize="20sp"
+                 />
+             </androidx.appcompat.widget.LinearLayoutCompat>
+
          </androidx.appcompat.widget.LinearLayoutCompat>
 
 
