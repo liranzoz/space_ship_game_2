@@ -25,14 +25,20 @@ class MenuActivity : AppCompatActivity() {
         muteUnmuteButton()
         startGame()
         showRecords()
+        showSettings()
+    }
+
+    private fun showSettings() {
+        binding.btnSettings.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
 
     private fun showBackground(){
         val alienImageView = binding.bkMainMenu
-        Glide.with(this)
-            .load(R.drawable.bk_loop_space)
-            .into(alienImageView)
+        Glide.with(this).load(R.drawable.bk_loop_space).into(alienImageView)
     }
 
     private fun startGame(){

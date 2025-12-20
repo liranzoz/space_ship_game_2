@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -12,71 +11,141 @@
         android:id="@+id/bkSettings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/bk_loop_space"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:src="@drawable/bk_loop_space" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBackToMenu"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Return to menu"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        app:strokeColor="#2EDCF4"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="15dp"
+        />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txtSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Settings"
-        android:textColor="#26DEC3"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:textStyle="bold"
-        android:textSize="35sp"
-        />
+        android:layout_marginTop="30dp"
+        android:shadowColor="#000000"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="5"
+        android:text="SETTINGS"
+        android:textColor="#26DEC3"
+        android:textSize="40sp"
+        android:textStyle="bold" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardNickname"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_below="@+id/txtSettings"
-        >
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtSettings"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="15dp"
+        app:cardBackgroundColor="#80000000"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="8dp">
+
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            >
+            android:padding="15dp">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button Mode"
-                android:textSize="24sp"
-                android:textColor="@color/white"
-                android:textAlignment="textEnd"
-                />
-
-            <androidx.appcompat.widget.SwitchCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                />
+                android:text="Player nickname:"
+                android:textColor="#AAAAAA"
+                android:textSize="24sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txtNickName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Tilt Mode"
-                android:textSize="24sp"
+                android:gravity="center"
+                android:text="LiranZozulya"
                 android:textColor="@color/white"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="7dp"
-                />
-
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.cardview.widget.CardView>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardControl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="20dp"
+        app:cardBackgroundColor="#99000000"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp">
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="25dp">
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:letterSpacing="0.1"
+                android:text="CONTROL MODE"
+                android:textColor="#26DEC3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="Buttons"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
 
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:theme="@style/Theme.AppCompat.Light" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:text="Sensors"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>
