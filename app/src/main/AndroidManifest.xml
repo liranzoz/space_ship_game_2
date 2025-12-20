@@ -13,7 +13,9 @@
         android:roundIcon="@drawable/ic_rick_and_morty_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Space_ship_game">
-
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -6,42 +6,77 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/bk_loop_space"
-    >
+    tools:context=".SettingsActivity">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/bkSettings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bk_loop_space"
+        android:scaleType="centerCrop"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:textColor="#26DEC3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:textSize="35sp"
+        />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <FrameLayout
-            android:id="@+id/layLst"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#2EDCF4"
-            />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/lblInfo"
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_below="@+id/txtSettings"
+        >
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="16dp"
-            android:gravity="center"
-            android:textSize="24sp"
-            android:text="activity"
-            />
-
-        <FrameLayout
-            android:id="@+id/layMap"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_marginTop="30dp"
             android:layout_weight="1"
-            android:background="#CDDC39"
-            />
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button Mode"
+                android:textSize="24sp"
+                android:textColor="@color/white"
+                android:textAlignment="textEnd"
+                />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Tilt Mode"
+                android:textSize="24sp"
+                android:textColor="@color/white"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="7dp"
+                />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+
 
 </RelativeLayout>

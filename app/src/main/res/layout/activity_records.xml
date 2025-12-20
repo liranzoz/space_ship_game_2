@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:text="Top Scores"
             android:gravity="center"
+            android:textStyle="bold"
             android:textColor="#26DEC3"
             android:textSize="30sp"
             />
