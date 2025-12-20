@@ -11,12 +11,12 @@ object GameManager {
     private const val KEY_NICKNAME = "KEY_NICKNAME"
     private const val KEY_SCORES = "KEY_SCORES"
 
-    var nickname: String = "LiranZozulya"
+    var nickname: String = "Random Player"
         private set
 
     fun init(context: Context) {
         val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        nickname = prefs.getString(KEY_NICKNAME, "LiranZozulya") ?: "LiranZozulya"
+        nickname = prefs.getString(KEY_NICKNAME, "Random Player") ?: "Random Player"
     }
 
     fun updateNickname(context: Context, newName: String) {
