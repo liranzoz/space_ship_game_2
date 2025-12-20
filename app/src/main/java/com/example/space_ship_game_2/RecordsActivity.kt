@@ -9,9 +9,11 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.space_ship_game_2.databinding.ActivityRecordsBinding
 
-class RecordsActivity : AppCompatActivity() {
+class RecordsActivity : AppCompatActivity(), OnScoreItemClickListener {
 
     private lateinit var binding: ActivityRecordsBinding
+    val mapsFragment = MapsFragment()
+    val recordListFragment = RecordListFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,17 +22,23 @@ class RecordsActivity : AppCompatActivity() {
         binding = ActivityRecordsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViews()
+        initFragments()
         backToMenu()
         showBackground()
     }
 
     private fun initViews(){
-        val mapsFragment = MapsFragment()
         supportFragmentManager.beginTransaction().replace(R.id.layMap, mapsFragment).commit()
-
-        val recordListFragment = RecordListFragment()
         supportFragmentManager.beginTransaction().replace(R.id.layLst, recordListFragment).commit()
 
+    }
+    private fun initFragments() {
+        recordListFragment.itemClickListener = this
+        supportFragmentManager.beginTransaction().replace(R.id.layMap, mapsFragment).replace(R.id.layLst, recordListFragment).commit()
+    }
+
+    override fun onScoreItemClicked(lat: Double, lon: Double) {
+        mapsFragment.zoomToLocation(lat, lon)
     }
     private fun showBackground(){
         val alienImageView = binding.bkRecords
