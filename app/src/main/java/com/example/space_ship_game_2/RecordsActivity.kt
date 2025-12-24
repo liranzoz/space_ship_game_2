@@ -46,8 +46,6 @@ class RecordsActivity : AppCompatActivity(), OnScoreItemClickListener {
     }
     private fun backToMenu(){
         binding.btnBackToMenu.setOnClickListener {
-            val intent = Intent(this, MenuActivity::class.java)
-            startActivity(intent)
             finish()
         }
     }

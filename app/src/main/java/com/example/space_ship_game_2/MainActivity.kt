@@ -257,6 +257,7 @@ class MainActivity : AppCompatActivity() {
         builder.setNegativeButton("Exit to menu") { _, _ ->
             val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
+            finish()
             SoundManager.stopBackgroundMusic()
             SoundManager.startBackgroundMusic(R.raw.snd_rick_and_morty_theme_song)
         }
