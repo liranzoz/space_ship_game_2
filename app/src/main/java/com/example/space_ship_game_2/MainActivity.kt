@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         val bundle = intent.getBundleExtra("BUNDLE")
 
@@ -206,7 +207,7 @@ class MainActivity : AppCompatActivity() {
                                                 isGameRunning = false
                                                 gameTimer.cancel()
                                                 saveScore()
-                                                showGameOverDialog()
+                                                handleGameOver()
                                                 SoundManager.pauseBackgroundMusic()
                                                 SoundManager.playSound(R.raw.sound_rick_sanchez_player)
                                                 return
@@ -315,6 +316,18 @@ class MainActivity : AppCompatActivity() {
         if (lives < 1) binding.icHeart1.visibility = View.INVISIBLE
     }
 
+    private fun handleGameOver(){
+        val intent = Intent(this, ScoreActivity::class.java)
+        val bundle = Bundle()
+        val SCORE_KEY = "SCORE_KEY"
+        bundle.putInt(SCORE_KEY, score)
+        intent.putExtra("SCORE_BUNDLE", bundle)
+        SoundManager.stopBackgroundMusic()
+        SoundManager.startBackgroundMusic(R.raw.snd_rick_and_morty_theme_song)
+        startActivity(intent)
+        finish()
+    }
+
     private fun showGameOverDialog() {
         val builder = android.app.AlertDialog.Builder(this)
         builder.setTitle("wabbalabbadubdub!")
@@ -325,21 +338,11 @@ class MainActivity : AppCompatActivity() {
             restartGame()
         }
 
-        builder.setNegativeButton("Exit to menu") { _, _ ->
-            val intent = Intent(this, MenuActivity::class.java)
-            startActivity(intent)
-            finish()
-            SoundManager.stopBackgroundMusic()
-            SoundManager.startBackgroundMusic(R.raw.snd_rick_and_morty_theme_song)
+        builder.setNegativeButton("Exit") { _, _ ->
+
+
         }
         builder.show()
-    }
-
-    private fun isGameEnded() : Boolean{
-        if (!isGameRunning && lives == 0){
-            return true
-        }
-        return false
     }
 
     private fun restartGame() {
@@ -383,6 +386,7 @@ class MainActivity : AppCompatActivity() {
             GameManager.addScore(this, score, 0.0, 0.0)
         }
     }
+
     @RequiresPermission(Manifest.permission.VIBRATE)
     private fun vibrate() {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
