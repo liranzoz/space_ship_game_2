@@ -1,6 +1,7 @@
 package com.example.space_ship_game_2
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -36,8 +37,16 @@ class ScoreActivity : AppCompatActivity() {
     private fun updateScore(){
         val bundle = intent.getBundleExtra("SCORE_BUNDLE")
         val score = bundle?.getInt("SCORE_KEY")
-        binding.lblScore.text = score.toString()
+        if (score != null) {
+            if(score <= 50){
+                binding.lblScore.setTextColor(Color.parseColor("#ff0000"))
 
+            }
+            else if(score > 150){
+                binding.lblScore.setTextColor(Color.parseColor("#26DEC3"))
+            }
+        }
+        binding.lblScore.text = score.toString()
     }
 
     private fun handleClicks(){
@@ -47,6 +56,7 @@ class ScoreActivity : AppCompatActivity() {
             bundle.putSerializable("GAME_MODE_KEY", selectedGameMode)
             intent.putExtra("BUNDLE", bundle)
             startActivity(intent)
+            finish()
         }
         binding.btnExit.setOnClickListener {finish()}
     }
