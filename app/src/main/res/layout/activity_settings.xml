@@ -139,7 +139,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:gravity="start"
-                    android:text="Sensors(Hard)"
+                    android:text="Sensors"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
 
