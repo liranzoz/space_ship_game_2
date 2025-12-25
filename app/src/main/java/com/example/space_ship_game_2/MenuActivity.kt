@@ -14,6 +14,8 @@ class MenuActivity : AppCompatActivity() {
     private lateinit var binding: MainMenuBinding
     private var isSoundOn = true
 
+    private var selectedGameMode: eGameMode = eGameMode.BUTTONS_MODE
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -23,6 +25,12 @@ class MenuActivity : AppCompatActivity() {
         GameManager.init(this)
         SoundManager.init(this)
         SoundManager.startBackgroundMusic(R.raw.snd_rick_and_morty_theme_song)
+
+        val incomingBundle = intent.getBundleExtra("BUNDLE")
+        if (incomingBundle != null) {
+            selectedGameMode = incomingBundle.getSerializable("GAME_MODE_KEY") as eGameMode
+        }
+
         showBackground()
         muteUnmuteButton()
         startGame()
@@ -42,6 +50,9 @@ class MenuActivity : AppCompatActivity() {
     private fun showSettings() {
         binding.btnSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
+            val bundle = Bundle()
+            bundle.putSerializable("GAME_MODE_KEY", selectedGameMode)
+            intent.putExtra("BUNDLE", bundle)
             startActivity(intent)
         }
     }
@@ -52,8 +63,12 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun startGame(){
+
         binding.btnStartGame.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
+            val bundle = Bundle()
+            bundle.putSerializable("GAME_MODE_KEY", selectedGameMode)
+            intent.putExtra("BUNDLE", bundle)
             startActivity(intent)
         }
     }

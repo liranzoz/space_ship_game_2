@@ -16,6 +16,7 @@ import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isGone
 import com.bumptech.glide.Glide
 import com.example.space_ship_game_2.com.example.space_ship_game_2.GameManager
 import com.example.space_ship_game_2.databinding.ActivityMainBinding
@@ -47,6 +48,8 @@ class MainActivity : AppCompatActivity() {
 
     var isGamePaused : Boolean = false
 
+    private lateinit var accSensorApi: AccSensorApi
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -62,6 +65,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val bundle = intent.getBundleExtra("BUNDLE")
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         requestLocationPermission()
 
@@ -72,12 +77,39 @@ class MainActivity : AppCompatActivity() {
         matrixInit()
         showPlayerAvatar()
         startFalling()//main func
-        movementButtons()
+
+        val gameMode = bundle?.getSerializable("GAME_MODE_KEY") as? eGameMode
+        if (gameMode == eGameMode.SENSORS_MODE){
+            hideButtons()
+            accSensorApi = AccSensorApi(this, object : AccSensorCallBack {
+                override fun data(x: Float, y: Float, z: Float) {
+                    moveShipSensors(x)
+                }
+            })
+        }
+        else {
+            movementButtons()
+        }
 
         binding.btnPause.setOnClickListener {
             onPauseClicked()
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        if (::accSensorApi.isInitialized) {
+            accSensorApi.start()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::accSensorApi.isInitialized) {
+            accSensorApi.stop()
+        }
+    }
+
 
     private fun requestLocationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -200,12 +232,50 @@ class MainActivity : AppCompatActivity() {
         }, 0, delay)
     }//main func
 
-    private  fun movementButtons(){
-        binding.btnArrowLeft.setOnClickListener {moveShip(-1)}
-        binding.btnArrowRight.setOnClickListener {moveShip(1)}
+    private fun hideButtons(){
+            binding.btnArrowLeft.isGone = true
+            binding.btnArrowRight.isGone = true
     }
 
-    private fun moveShip(direction: Int) {
+    private  fun movementButtons(){
+        binding.btnArrowLeft.setOnClickListener {moveShipButtons(-1)}
+        binding.btnArrowRight.setOnClickListener {moveShipButtons(1)}
+    }
+
+    private fun moveShipSensors(sensorTilt: Float) {
+        var newCol = shipCol
+
+
+        if (sensorTilt in 1f..3f) { //light left
+            newCol--
+        }
+         else if (sensorTilt > 3f) { //strong left
+            newCol -=2
+        }
+         else if (sensorTilt in -3f..-1f) { //light right
+             newCol++
+         }
+         else if (sensorTilt < -3f) { //strong right
+             newCol +=2
+         }
+
+        if (newCol < 0) {
+            newCol = 0
+        }
+        if (newCol > 4) { // או COLS - 1
+            newCol = 4
+        }
+        if (newCol != shipCol) {
+            gameMatrix[LASTROWINDEX]?.get(shipCol)?.visibility = View.INVISIBLE
+            shipCol = newCol
+            updateSoliderPic(shipCol)
+            gameMatrix[LASTROWINDEX]?.get(shipCol)?.visibility = View.VISIBLE
+        }
+
+    }
+
+    private fun moveShipButtons(direction: Int) {
+
         val newCol = shipCol + direction
 
         if (newCol < 0 || newCol > LASTROWINDEX) {
@@ -218,6 +288,7 @@ class MainActivity : AppCompatActivity() {
         gameMatrix[LASTROWINDEX]?.get(shipCol)?.visibility = View.VISIBLE
 
     }
+
 
     private fun updateSoliderPic(shipCol : Int) {
         if (shipCol == 0){showPlayerAvatar(binding.pickleRick40)}
