@@ -40,6 +40,7 @@ class MenuActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        SoundManager.resumeBackgroundMusic()
         updateUI()
     }
 
