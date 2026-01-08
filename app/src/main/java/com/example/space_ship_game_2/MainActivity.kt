@@ -31,9 +31,7 @@ class MainActivity : AppCompatActivity() {
     val ROWS = 5
     val COLS = 5
     var shipCol = 2
-
     val LASTROWINDEX = 4
-
     var SCOREACCLERATION = 10
     var delay: Long = 700
     lateinit var gameMatrix: Array<Array<ImageView?>?>
@@ -45,18 +43,15 @@ class MainActivity : AppCompatActivity() {
     lateinit var gameTimer: Timer
     lateinit var random: Random
     var isGameRunning : Boolean = true
-
     var isGamePaused : Boolean = false
-
     private lateinit var accSensorApi: AccSensorApi
-
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         // will be info popup
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,15 +105,12 @@ class MainActivity : AppCompatActivity() {
             accSensorApi.stop()
         }
     }
-
-
     private fun requestLocationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
         }
     }
-
     private fun showBackground(){
         val alienImageView = binding.bkGame
         Glide.with(this).load(R.drawable.bk_loop_space).into(alienImageView)
@@ -128,7 +120,6 @@ class MainActivity : AppCompatActivity() {
             .load(R.drawable.pickle_rick_sticker)
             .into(alienImageView)
     }
-
     private fun matrixInit(){
         gameMatrix = Array(ROWS) { arrayOfNulls(COLS) }
         gameMatrix[LASTROWINDEX-4]?.set(0, binding.solider00)
@@ -163,7 +154,6 @@ class MainActivity : AppCompatActivity() {
 
         restartMatrix()
     }
-
     private fun startFalling() {
         random = Random()
         gameTimer = Timer()
@@ -194,30 +184,47 @@ class MainActivity : AppCompatActivity() {
                         for (row in LASTROWINDEX - 1 downTo 0) {
                             for (col in 0 until COLS) {
                                 if (gameMatrix[row]?.get(col)?.visibility == View.VISIBLE) {
+                                    val objectType = gameMatrix[row]?.get(col)?.tag
                                     gameMatrix[row]?.get(col)?.visibility = View.INVISIBLE
                                     val nextRow = row + 1
 
-                                    if (nextRow == LASTROWINDEX) { //hit
+                                    if (nextRow == LASTROWINDEX) {
                                         if (col == shipCol) {
-                                            lives--
-                                            vibrate()
-                                            SoundManager.playSound(R.raw.sound_eating_roar)
-                                            updateLivesUI()
-                                            if (lives == 0) { //gameover
-                                                isGameRunning = false
-                                                gameTimer.cancel()
-                                                saveScore()
-                                                handleGameOver()
-                                                SoundManager.pauseBackgroundMusic()
-                                                SoundManager.playSound(R.raw.sound_rick_sanchez_player)
-                                                return
+                                            if (objectType == "REWARD") {
+                                                score += 10
+                                                showToast("You got extra 10 points!")
+                                                updateScoreUI()
+                                            } else {
+                                                lives--
+                                                vibrate()
+                                                SoundManager.playSound(R.raw.sound_eating_roar)
+                                                updateLivesUI()
+                                                if (lives == 0) {
+                                                    isGameRunning = false
+                                                    gameTimer.cancel()
+                                                    saveScore()
+                                                    handleGameOver()
+                                                    SoundManager.pauseBackgroundMusic()
+                                                    SoundManager.playSound(R.raw.sound_rick_sanchez_player)
+                                                    return
+                                                }
                                             }
                                         } else {
-                                            gameMatrix[LASTROWINDEX]?.get(col)?.setImageResource(R.drawable.gromflomite_soldier)
+                                            gameMatrix[LASTROWINDEX]?.get(col)?.tag = objectType
+                                            if (objectType == "REWARD") {
+                                                gameMatrix[LASTROWINDEX]?.get(col)?.setImageResource(R.drawable.img_portal_gun)
+                                            } else {
+                                                gameMatrix[LASTROWINDEX]?.get(col)?.setImageResource(R.drawable.gromflomite_soldier)
+                                            }
                                             gameMatrix[LASTROWINDEX]?.get(col)?.visibility = View.VISIBLE
                                         }
                                     } else {
-                                        gameMatrix[nextRow]?.get(col)?.setImageResource(R.drawable.gromflomite_soldier)
+                                        gameMatrix[nextRow]?.get(col)?.tag = objectType
+                                        if (objectType == "REWARD") {
+                                            gameMatrix[nextRow]?.get(col)?.setImageResource(R.drawable.img_portal_gun)
+                                        } else {
+                                            gameMatrix[nextRow]?.get(col)?.setImageResource(R.drawable.gromflomite_soldier)
+                                        }
                                         gameMatrix[nextRow]?.get(col)?.visibility = View.VISIBLE
                                     }
                                 }
@@ -225,24 +232,29 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         val newCol = random.nextInt(COLS)
-                        gameMatrix[0]?.get(newCol)?.setImageResource(R.drawable.gromflomite_soldier)
+                        val isReward = random.nextInt(100) < 20
+
+                        if (isReward) {
+                            gameMatrix[0]?.get(newCol)?.setImageResource(R.drawable.img_portal_gun)
+                            gameMatrix[0]?.get(newCol)?.tag = "REWARD"
+                        } else {
+                            gameMatrix[0]?.get(newCol)?.setImageResource(R.drawable.gromflomite_soldier)
+                            gameMatrix[0]?.get(newCol)?.tag = "ENEMY"
+                        }
                         gameMatrix[0]?.get(newCol)?.visibility = View.VISIBLE
                     }
                 })
             }
         }, 0, delay)
     }//main func
-
     private fun hideButtons(){
             binding.btnArrowLeft.isGone = true
             binding.btnArrowRight.isGone = true
     }
-
     private  fun movementButtons(){
         binding.btnArrowLeft.setOnClickListener {moveShipButtons(-1)}
         binding.btnArrowRight.setOnClickListener {moveShipButtons(1)}
     }
-
     private fun moveShipSensors(sensorTilt: Float) {
         var newCol = shipCol
 
@@ -274,7 +286,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-
     private fun moveShipButtons(direction: Int) {
 
         val newCol = shipCol + direction
@@ -289,8 +300,6 @@ class MainActivity : AppCompatActivity() {
         gameMatrix[LASTROWINDEX]?.get(shipCol)?.visibility = View.VISIBLE
 
     }
-
-
     private fun updateSoliderPic(shipCol : Int) {
         if (shipCol == 0){showPlayerAvatar(binding.pickleRick40)}
 
@@ -303,7 +312,6 @@ class MainActivity : AppCompatActivity() {
         if (shipCol == 4){showPlayerAvatar(binding.pickleRick44)}
 
     }
-
     private fun updateLivesUI() {
         if (lives == 3){
             binding.icHeart3.visibility = View.VISIBLE
@@ -315,7 +323,6 @@ class MainActivity : AppCompatActivity() {
         if (lives < 2) binding.icHeart2.visibility = View.INVISIBLE
         if (lives < 1) binding.icHeart1.visibility = View.INVISIBLE
     }
-
     private fun handleGameOver(){
         val intent = Intent(this, ScoreActivity::class.java)
         val bundle = Bundle()
@@ -344,7 +351,6 @@ class MainActivity : AppCompatActivity() {
         }
         builder.show()
     }
-
     private fun restartGame() {
         lives = 3
         score = 0
@@ -354,7 +360,6 @@ class MainActivity : AppCompatActivity() {
         isGameRunning = true
         startFalling()
     }
-
     private fun restartMatrix(){
         for (row in gameMatrix) {
             row?.forEach { imageView ->
@@ -365,11 +370,9 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-
     private fun updateScoreUI(){
         binding.scoreCounter.text = score.toString()
     }
-
     private fun saveScore(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -386,7 +389,6 @@ class MainActivity : AppCompatActivity() {
             GameManager.addScore(this, score, 0.0, 0.0)
         }
     }
-
     @RequiresPermission(Manifest.permission.VIBRATE)
     private fun vibrate() {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -397,13 +399,11 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-
     private fun onPauseClicked() {
         isGamePaused = true
         SoundManager.toggleSound(false)
         showPauseDialog()
     }
-
     private fun showPauseDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("PAUSED")
