@@ -29,9 +29,9 @@ This project demonstrates the use of Android core components, hardware sensors, 
 
 ## 📸 Screenshots
 
-| Start Screen | Gameplay (Buttons) | Gameplay (Sensors) | Top Scores |
-|:---:|:---:|:---:|:---:|
-| ![Start Screen](path/to/screenshot1.png) | ![Gameplay](path/to/screenshot2.png) | ![Sensors](path/to/screenshot3.png) | ![Scores](path/to/screenshot4.png) |
+|                                Start Screen                                 |                           Gameplay (Buttons)                            |            Current Score            |             Top Scores             |
+|:---------------------------------------------------------------------------:|:-----------------------------------------------------------------------:|:-----------------------------------:|:----------------------------------:|
+| ![Start Screen](screenshots/screenshot_20260110_122359_space_ship_game.jpg) | ![Gameplay](screenshots/Screenshot_20260110_122421_space_ship_game.jpg) | ![Sensors](path/to/screenshot3.png) | ![Scores](path/to/screenshot4.png) |
 *(Add your screenshots in a 'screenshots' folder in the repo)*
 
 ## 🎮 How to Play
